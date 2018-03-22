@@ -8,6 +8,7 @@ from random import randint
 from pathlib import Path
 from pptx import Presentation
 from pptx.enum.shapes import PP_PLACEHOLDER_TYPE
+from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 from pptx.util import Cm
 from pptx.util import Pt
 
@@ -21,13 +22,13 @@ Also it will reformat the slides to free space for images/meme and new content.
 """
 
 
-def smaller_text(slide):
+def smaller_text(slide, iNum):
     """
     Change font size of the slide for all text beside the title
     :param slide: the slide object we want to edit
     """
     for shape in slide.shapes:
-        if not shape.has_text_frame:
+        if not shape.has_text_frame or iNum == 0:
             continue
 
         if shape.is_placeholder:
@@ -35,8 +36,33 @@ def smaller_text(slide):
                     shape.placeholder_format.type is PP_PLACEHOLDER_TYPE.CENTER_TITLE:
                 continue
         for paragraph in shape.text_frame.paragraphs:
+
+            if iNum % 3 == 1:
+                paragraph.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
+            elif iNum % 3 == 2:
+                paragraph.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+            else:
+                paragraph.alignment = PP_PARAGRAPH_ALIGNMENT.RIGHT
             for run in paragraph.runs:
                 run.font.size = Pt(15)
+
+
+def insert_image(slide, path, iNum):
+    if iNum == 0:
+        pass
+    else:
+        if iNum % 3 == 2:
+            top = Cm(11)
+            left = Cm(14)
+        elif iNum % 3 == 0:
+            top = Cm(11)
+            left = Cm(0)
+        else:
+            top = Cm(11)
+            left = Cm(0)
+
+        height = Cm(6.8)
+        slide.shapes.add_picture(path, left, top, height=height)
 
 
 class Pres(object):
@@ -71,9 +97,10 @@ class Pres(object):
     def create_new_presentation(self):
 
         for slide in self.prs.slides:
-            smaller_text(slide)
             slide_num = self.prs.slides.index(slide)
-            self.add_image("s" + str(slide_num), slide)
+            smaller_text(slide, slide_num)
+
+            self.add_image("s" + str(slide_num), slide, slide_num)
         self.add_notes()
         self.prs.save("result.pptx")
 
@@ -88,7 +115,7 @@ class Pres(object):
                 hlink = r.hyperlink
                 hlink.address = url
 
-    def add_image(self, path_to_image_dir, slide):
+    def add_image(self, path_to_image_dir, slide, iNum):
         if self.prs.slides.index(slide) % 2 == 0:
             title = self.slides[self.prs.slides.index(slide)].title
             if title.endswith(" "):
@@ -103,12 +130,4 @@ class Pres(object):
         index = randint(0, len(only_files) - 1)
 
         path_to_image = path_to_image_dir + "\\" + only_files[index]
-        self.insert_image(slide, path_to_image)
-
-    def insert_image(self, slide, path):
-        top = Cm(11)
-        left = Cm(12)
-        height = Cm(6.8)
-        pic = slide.shapes.add_picture(path, left, top, height=height)
-        pic.left = self.prs.slide_width - pic.width
-
+        insert_image(slide, path_to_image, iNum)
