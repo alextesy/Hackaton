@@ -1,8 +1,7 @@
-from Presentation import Pres
-from Slide import Slide
 import Search
+from Presentation import Pres
 
 present = Pres("PresentationGuide.pptx", "sample")
 present.initialize()
 Search.runSearch(present.slides)
-#present.create_new_presentation()
+present.create_new_presentation()

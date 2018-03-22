@@ -3,4 +3,4 @@ class Slide:
         self.title = title
         self.content = content
         self.slideNum = slide_num
-        self.url = None
+        self.url = []

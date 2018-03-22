@@ -73,8 +73,7 @@ class Pres(object):
         for slide in self.prs.slides:
             smaller_text(slide)
             slide_num = self.prs.slides.index(slide)
-            path_to_image_dir = self.slides[slide_num].path_to_image
-            self.add_image(path_to_image_dir, slide)
+            self.add_image("s" + str(slide_num), slide)
         self.add_notes()
         self.prs.save("result.pptx")
 
@@ -90,15 +89,26 @@ class Pres(object):
                 hlink.address = url
 
     def add_image(self, path_to_image_dir, slide):
+        if self.prs.slides.index(slide) % 2 == 0:
+            title = self.slides[self.prs.slides.index(slide)].title
+            if title.endswith(" "):
+                title = title[:-1]
+            path_to_image_dir += "\\" + title
+        else:
+            title = self.slides[self.prs.slides.index(slide)].title
+            if title.endswith(" "):
+                title = title[:-1]
+            path_to_image_dir += "\\" + title + " meme"
         only_files = [f for f in listdir(path_to_image_dir) if isfile(join(path_to_image_dir, f))]
         index = randint(0, len(only_files) - 1)
-        self.insert_image(slide, only_files[index])
+
+        path_to_image = path_to_image_dir + "\\" + only_files[index]
+        self.insert_image(slide, path_to_image)
 
     def insert_image(self, slide, path):
-        img_path = ".\\downloads\\'eagle'\\" + path
         top = Cm(11)
         left = Cm(12)
         height = Cm(6.8)
-        pic = slide.shapes.add_picture(img_path, left, top, height=height)
+        pic = slide.shapes.add_picture(path, left, top, height=height)
         pic.left = self.prs.slide_width - pic.width
 
