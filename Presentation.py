@@ -4,9 +4,19 @@ import os
 
 from pathlib import Path
 from pptx import Presentation
+from pptx.util import Pt
 
 from Parser import Parser
 from Slide import Slide
+
+
+def smaller_text(slide):
+    for shape in slide.shapes:
+        if not shape.has_text_fame:
+            continue
+        for paragraph in shape.text_frame.paragraphs:
+            for run in paragraph.runs:
+                run.font.size = Pt(16)
 
 
 class Pres(object):
@@ -39,4 +49,5 @@ class Pres(object):
             print(slide.url.path, file=url_file)
 
     def create_new_presentation(self):
-        pass
+        for slide in self.prs.slides:
+            smaller_text(slide)
