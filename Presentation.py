@@ -37,3 +37,6 @@ class Pres(object):
         url_file = open(url_file_name, "w")
         for slide in self.slides:
             print(slide.url.path, file=url_file)
+
+    def create_new_presentation(self):
+        pass
