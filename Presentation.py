@@ -4,7 +4,9 @@ import os
 
 from pathlib import Path
 from pptx import Presentation
+from pptx.enum.shapes import PP_PLACEHOLDER_TYPE
 from pptx.util import Pt
+from pptx.util import Cm
 
 from Parser import Parser
 from Slide import Slide
@@ -12,8 +14,13 @@ from Slide import Slide
 
 def smaller_text(slide):
     for shape in slide.shapes:
-        if not shape.has_text_fame:
+        if not shape.has_text_frame:
             continue
+
+        if shape.is_placeholder:
+            if shape.placeholder_format.type is PP_PLACEHOLDER_TYPE.TITLE or \
+                    shape.placeholder_format.type is PP_PLACEHOLDER_TYPE.CENTER_TITLE:
+                continue
         for paragraph in shape.text_frame.paragraphs:
             for run in paragraph.runs:
                 run.font.size = Pt(16)
@@ -51,3 +58,9 @@ class Pres(object):
     def create_new_presentation(self):
         for slide in self.prs.slides:
             smaller_text(slide)
+            img_path = "./downloads/'eagle'"
+            left = top = Cm(20)
+            height = Cm(40)
+            slide.shapes.add_picture(img_path, left, top, height=height)
+
+        self.prs.save("result.pptx")
