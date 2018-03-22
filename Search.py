@@ -16,7 +16,7 @@ def searcher(slide):
     s2 = "googleimagesdownload --keywords \"" + query + " meme\" --limit 1 -o " + my_path
     os.system(s1)  # save pic
     os.system(s2)
-    advancedQuery = query + ' site:reuters.com'
+    advancedQuery = query
     google_result = google.search(advancedQuery, 2)
     i = 0
     for res in google_result:
