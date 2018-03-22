@@ -6,7 +6,9 @@ from google import google
 
 def searcher(slide):
     query=slide.title
+    query=query[0:-1]
     mypath = 's'+ str(slide.slideNum)
+    mypath=mypath[1:5]
     if not os.path.isdir(mypath):
         os.makedirs(mypath)
     s1 = "googleimagesdownload --keywords \""+query+"\" --limit 1 -o "+mypath
