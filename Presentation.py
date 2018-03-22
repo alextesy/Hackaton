@@ -1,8 +1,7 @@
-import re
-
 from pathlib import Path
 from pptx import Presentation
 
+from Parser import Parser
 from Slide import Slide
 
 
@@ -14,22 +13,15 @@ class Pres(object):
             self.prs = Presentation(path)
             self.course = course
             self.slides = []
-            self.stop_words = set(line.strip() for line in open('stop_words.txt'))
+            self.parser = Parser()
+
         else:
             raise Exception("No Presentation is found")
 
-    def parse_title(self, title):
-        delimiters = " ", ",", ";" "." "?" "\n" "\t"
-        regex_pattern = '|'.join(map(re.escape, delimiters))
-        words = re.split(regex_pattern, title)
-        for word in words:
-            if word in self.stop_words:
-                title.replace(word, '')
-        return title
-
     def initialize(self):
         for slide in self.prs.slides:
-            if not slide.shapes.title.has_text_frame:
+            if slide.shapes.title is None or (not slide.shapes.title.has_text_frame):
                 continue
-            title = self.parse_title(slide.shapes.title.text)
+            title = self.parser.parse_title(slide.shapes.title.text)
             s = Slide(title, "", self.prs.slides.index(slide), False, False, False, False)
+            self.slides.append(s)

@@ -7,6 +7,6 @@ class Slide:
         self.text = text
         self.meme = meme
         self.video = video
+        self.url = None
 
-    def find_links(self):
-        pass
+

@@ -1,4 +1,7 @@
-from Presentation import Presentation
+from Presentation import Pres
 
-present = Presentation("PresentationGuide.pptx")
+
+present = Pres("PresentationGuide.pptx", "sample")
 present.initialize()
+
+print("done")
