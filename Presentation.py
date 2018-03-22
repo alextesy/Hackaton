@@ -101,3 +101,4 @@ class Pres(object):
         height = Cm(6.8)
         pic = slide.shapes.add_picture(img_path, left, top, height=height)
         pic.left = self.prs.slide_width - pic.width
+
