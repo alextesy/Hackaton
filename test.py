@@ -10,6 +10,7 @@ for index in range(0,5):
 
 
 present = Pres("PresentationGuide.pptx", "sample")
+present.initialize()
 present.slides = slides
 present.create_new_presentation()
 

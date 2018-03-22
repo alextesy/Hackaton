@@ -1,6 +1,9 @@
 from __future__ import print_function
 
 import os
+from os import listdir
+from os.path import isfile, join
+from random import randint
 
 from pathlib import Path
 from pptx import Presentation
@@ -21,8 +24,7 @@ Also it will reformat the slides to free space for images/meme and new content.
 def smaller_text(slide):
     """
     Change font size of the slide for all text beside the title
-    :param slide:
-    :return:
+    :param slide: the slide object we want to edit
     """
     for shape in slide.shapes:
         if not shape.has_text_frame:
@@ -70,13 +72,9 @@ class Pres(object):
 
         for slide in self.prs.slides:
             smaller_text(slide)
-            img_path = ".\\downloads\\'eagle'\\3. post21.jpg"
-            top = Cm(11)
-            left = Cm(12)
-            height = Cm(6.8)
-            pic = slide.shapes.add_picture(img_path, left, top, height=height)
-            pic.left = self.prs.slide_width - pic.width
-
+            slide_num = self.prs.slides.index(slide)
+            path_to_image_dir = self.slides[slide_num].path_to_image
+            self.add_image(path_to_image_dir, slide)
         self.add_notes()
         self.prs.save("result.pptx")
 
@@ -90,3 +88,16 @@ class Pres(object):
                 r.text = url
                 hlink = r.hyperlink
                 hlink.address = url
+
+    def add_image(self, path_to_image_dir, slide):
+        only_files = [f for f in listdir(path_to_image_dir) if isfile(join(path_to_image_dir, f))]
+        index = randint(0, len(only_files) - 1)
+        self.insert_image(slide, only_files[index])
+
+    def insert_image(self, slide, path):
+        img_path = ".\\downloads\\'eagle'\\" + path
+        top = Cm(11)
+        left = Cm(12)
+        height = Cm(6.8)
+        pic = slide.shapes.add_picture(img_path, left, top, height=height)
+        pic.left = self.prs.slide_width - pic.width

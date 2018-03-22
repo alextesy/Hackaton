@@ -26,7 +26,6 @@ class Parser(object):
 
     def clean_token(self, token):
         token_length = len(token)
-        print('.' in self.punctuations_set)
         while (token_length > 0) and token[0] in self.punctuations_set:
             token = token[1:]
             token_length -= 1
