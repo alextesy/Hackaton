@@ -5,14 +5,25 @@ import os
 from pathlib import Path
 from pptx import Presentation
 from pptx.enum.shapes import PP_PLACEHOLDER_TYPE
-from pptx.util import Pt
 from pptx.util import Cm
+from pptx.util import Pt
 
 from Parser import Parser
 from Slide import Slide
 
+"""
+This class is controlling the powerpoint file. 
+It can read the powerpoint text and get the titles of each slide.
+Also it will reformat the slides to free space for images/meme and new content.
+"""
+
 
 def smaller_text(slide):
+    """
+    Change font size of the slide for all text beside the title
+    :param slide:
+    :return:
+    """
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
@@ -23,7 +34,7 @@ def smaller_text(slide):
                 continue
         for paragraph in shape.text_frame.paragraphs:
             for run in paragraph.runs:
-                run.font.size = Pt(16)
+                run.font.size = Pt(15)
 
 
 class Pres(object):
@@ -45,7 +56,7 @@ class Pres(object):
             if slide.shapes.title is None or (not slide.shapes.title.has_text_frame):
                 continue
             title = self.parser.parse_title(slide.shapes.title.text)
-            s = Slide(title, "", self.prs.slides.index(slide), False, False, False, False)
+            s = Slide(title, "", self.prs.slides.index(slide))
             self.slides.append(s)
 
     def create_url_file(self):
@@ -56,11 +67,26 @@ class Pres(object):
             print(slide.url.path, file=url_file)
 
     def create_new_presentation(self):
+
         for slide in self.prs.slides:
             smaller_text(slide)
-            img_path = "./downloads/'eagle'"
-            left = top = Cm(20)
-            height = Cm(40)
-            slide.shapes.add_picture(img_path, left, top, height=height)
+            img_path = ".\\downloads\\'eagle'\\3. post21.jpg"
+            top = Cm(11)
+            left = Cm(12)
+            height = Cm(6.8)
+            pic = slide.shapes.add_picture(img_path, left, top, height=height)
+            pic.left = self.prs.slide_width - pic.width
 
+        self.add_notes()
         self.prs.save("result.pptx")
+
+    def add_notes(self):
+        for slide in self.slides:
+            slide_note = self.prs.slides[slide.slideNum].notes_slide
+            text_frame = slide_note.notes_text_frame
+            for url in slide.url:
+                p = text_frame.add_paragraph()
+                r = p.add_run()
+                r.text = url
+                hlink = r.hyperlink
+                hlink.address = url

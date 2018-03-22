@@ -1,12 +1,6 @@
 class Slide:
-    def __init__(self, title, content, slideNum, picture, text, meme, video):
+    def __init__(self, title, content, slide_num):
         self.title = title
         self.content = content
-        self.slideNum = slideNum
-        self.picture = picture
-        self.text = text
-        self.meme = meme
-        self.video = video
+        self.slideNum = slide_num
         self.url = None
-
-
