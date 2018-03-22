@@ -11,7 +11,7 @@ class Url:
         if self.flag=="img":
             urllib.urlretrieve(self.path, "/"+slide_number+"/"+self.path.rsplit('/', 1)[-1])
         if self.flag=="article":
-
+            
 
 
 
