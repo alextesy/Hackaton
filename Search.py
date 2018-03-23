@@ -4,6 +4,7 @@ from google import google
 from langdetect import detect
 import imgkit
 from google import google
+import os.path
 
 
 def searcher(slide):
@@ -40,19 +41,25 @@ def articles(slide):
             if lang == 'en':
                 path_wkhtmltoimage = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe'
                 config = imgkit.config(wkhtmltoimage=path_wkhtmltoimage)
+                if not os.path.isdir("Articles"):
+                    os.makedirs("Articles")
                 article_path = "Articles/" + query + str(idx) + '.jpg'
                 imgkit.from_url(res.google_link, article_path, config=config)
                 img = Image.open(article_path)
                 imgs2 = img.crop((0, 200, 1000, 1000))
-                imgs2.save(query + str(idx) + '.jpg')
+                imgs2.save(article_path)
+                break
         except Exception:
-            os.remove(query + str(idx) + '.jpg')
+            if os.path.exists(article_path):
+                os.remove(article_path)
             idx -= 1
 
 
 def runSearch(slides):
     for s in slides:
         searcher(s)
+        if s.slideNum != 0:
+            articles(s)
 
 
 '''

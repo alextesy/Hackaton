@@ -102,6 +102,7 @@ class Pres(object):
 
             self.add_image("s" + str(slide_num), slide, slide_num)
         self.add_notes()
+        self.add_article()
         self.prs.save("result.pptx")
 
     def add_notes(self):
@@ -136,10 +137,12 @@ class Pres(object):
 
     def add_article(self):
         blank_slide_layout = self.prs.slide_layouts[6]
-        images = [f for f in listdir("articles") if isfile(join("articles", f))]
+        images = [f for f in listdir("Articles") if isfile(join("Articles", f))]
         for image in images:
-            left = 0
+            img_path = "Articles/" + image
+            left = Cm(6)
             top = 0
             height = self.prs.slide_height
-            slide = self.prs.add_slide(blank_slide_layout)
-            slide.shapes.add_picture(image, left, top, height=height)
+
+            slide = self.prs.slides.add_slide(blank_slide_layout)
+            pic = slide.shapes.add_picture(img_path, left, top, height=height)
