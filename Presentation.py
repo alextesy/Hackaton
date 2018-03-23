@@ -108,6 +108,8 @@ class Pres(object):
         for slide in self.slides:
             slide_note = self.prs.slides[slide.slideNum].notes_slide
             text_frame = slide_note.notes_text_frame
+            if text_frame is None:
+                text_frame = slide_note.add_text_frame()
             for url in slide.url:
                 p = text_frame.add_paragraph()
                 r = p.add_run()
@@ -131,3 +133,13 @@ class Pres(object):
 
         path_to_image = path_to_image_dir + "\\" + only_files[index]
         insert_image(slide, path_to_image, iNum)
+
+    def add_article(self):
+        blank_slide_layout = self.prs.slide_layouts[6]
+        images = [f for f in listdir("articles") if isfile(join("articles", f))]
+        for image in images:
+            left = 0
+            top = 0
+            height = self.prs.slide_height
+            slide = self.prs.add_slide(blank_slide_layout)
+            slide.shapes.add_picture(image, left, top, height=height)
