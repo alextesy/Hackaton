@@ -11,4 +11,4 @@ The result is an interactive PPTX presentation in seconds.
 
 This helping tool was aimed to help professors and teaching assistants to make their lessons more interactive and less exhausting for both the students and the lecturers.
 
-The team: Shaked Eyal, Alex Kremiansky, Tal Ben-Senior, and Elior Nehemya.
+The team: Shaked Eyal, Alex Kremiansky, Tal Ben-Senior and Elior Nehemya.
